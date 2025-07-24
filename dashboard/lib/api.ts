@@ -92,7 +92,16 @@ class APIClient {
       headers: this.headers,
     })
     if (!response.ok) throw new Error('Failed to get browser')
-    return response.json()
+    const data = await response.json()
+    // Ensure consistent mapping like in listBrowsers
+    return {
+      id: data.browser_id || data.id || id,
+      browser_id: data.browser_id || data.id || id,
+      state: data.state,
+      websocket_url: data.websocket_url,
+      chrome_ready: data.chrome_ready,
+      pod_ip: data.pod_ip
+    }
   }
 
   async deleteBrowser(id: string): Promise<{ message: string }> {
